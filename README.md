@@ -850,6 +850,103 @@ Hacker News API
 
  1. Visit [http://localhost:8888/html/app.html](http://localhost:8888/html/app.html).
 
+[Previous](#newslist-more)
+
+---
+
+NewsList More Additions
+---
+ 1. Update the NewsList.js file.
+    ```javascript
+    var NewsList = React.createClass({
+      // ...
+
+      statics: {
+        getQueryVariable: function getQueryVariable(variable) {
+          var query = window.location.search.substring(1);
+          var vars = query.split("&");
+          for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+              return pair[1];
+            }
+          }
+          return false;
+        },
+      },
+      
+      getMore: function () {
+        var page = 2;
+        if (NewsList.getQueryVariable('p')) {
+          page = parseInt(NewsList.getQueryVariable('p')) + 1;
+        }
+        return (
+          <div className="newsList-more">
+            <a className="newsList-moreLink" href={"http://localhost:8888/html/app.html?p=" + page}>More</a>
+          </div>
+        );
+      },
+
+      render: function () {
+        var page = 0;
+        if (parseInt(NewsList.getQueryVariable('p'))) {
+          page = parseInt(NewsList.getQueryVariable('p')) - 1;
+        }
+        return (
+          <div className="newsList">
+            <NewsHeader/>
+            <div className="newsList-newsItems">
+              {_(this.props.items).map(function (item, index) {
+                var rank = index + 1 + page * 30;
+                return <NewsItem key={item.id} item={item} rank={rank}/>;
+              }.bind(this)).value()}
+            </div>
+            {this.getMore()}
+          </div>
+        );
+      }
+    ```
+
+ 2. Update the app.js file.
+    ```javascript
+    // ...
+    
+    $.ajax({
+      url: 'https://hacker-news.firebaseio.com/v0/topstories.json',
+      dataType: 'json'
+    }).then(function (stories) {
+      // Get the item details in parallel
+      var currPage = parseInt(NewsList.getQueryVariable('p'));
+      var start = 0, end = 30;
+      if (currPage) {
+        start = (currPage - 1) * 30;
+        end = currPage * 30;
+      }
+      var detailDeferreds = _(stories.slice(start, end)).map(function (itemId) {
+        return $.ajax({
+          url: 'https://hacker-news.firebaseio.com/v0/item/' + itemId + '.json',
+          dataType: 'json'
+        });
+      }).value();
+      return $.when.apply($, detailDeferreds);
+    })
+
+    // ...
+    ```
+
+ 3. Start Watchify.
+    ```bash
+    watchify -v -o build/js/app.js js/app.js
+    ```
+
+ 4. Start the HTTP server if necessary.
+    ```bash
+    http-server -p 8888
+    ```
+
+ 1. Visit [http://localhost:8888/html/app.html](http://localhost:8888/html/app.html).
+
     You have now implemented the [HN front page](https://news.ycombinator.com) in React.
 
-[Previous](#newslist-more)
+[Previous](#hacker-news-api)
+

@@ -1,3 +1,8 @@
+--
+What is React and why do we use it?
+--
+When I have been learning new React library from Facebook, I have found this fine repo: [https://github.com/mking/react-hn](https://github.com/mking/react-hn). I decided to add some new functionality (ability to use pagination within local site) and translate it to Russian. You can find the translation here: [http://sacret.ru/react-hn-tutorial](http://sacret.ru/react-hn-tutorial).
+
 React HN
 ===
 This is a visual React tutorial. This tutorial should give you a feel for "growing" a React UI from small, modular parts. By the end of this tutorial, you will have built the [HN front page in React](https://mking.github.io/react-hn).
@@ -21,6 +26,8 @@ This tutorial has five parts:
     <img src="img/NewsList@2x.png" width="532">
 
  1. [Display live data from the Hacker News API](#hacker-news-api)
+ 
+ 1. [Additonal functionality for More link](#newslist-more-additions)
 
 ---
 
